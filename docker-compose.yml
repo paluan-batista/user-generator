@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: "user-generator-db"
+    platform: linux/amd64
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: register_db
+      MYSQL_USER: register_user
+      MYSQL_PASSWORD: register_pwd
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    ports:
+      - "3308:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  adminer:
+    image: adminer
+    container_name: "user-generator-adminer"
+    platform: linux/amd64
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8181:8080
